@@ -1,0 +1,16 @@
+[
+  {
+    "id": "classification",
+    "title": "Classificação",
+    "description": "Classifique protocolos, conceitos, etc.",
+    "engine": "ClassificationEngine",
+    "file": "sample-classification.json"
+  },
+  {
+    "id": "match",
+    "title": "Ligar pares",
+    "description": "Ligue protocolos e portas ou conceitos",
+    "engine": "MatchEngine",
+    "file": "sample-match.json"
+  }
+]

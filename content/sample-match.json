@@ -1,0 +1,27 @@
+{
+  "type": "match",
+  "title": "Protocolos e Portas de Rede",
+  "description": "Associe cada protocolo com a porta correspondente e sua descrição (não óbvia).",
+  "data": [
+    { "primary": "HTTP", "porta": 80, "descricao": "Permite transferir conteúdos de páginas web" },
+    { "primary": "HTTPS", "porta": 443, "descricao": "Versão segura do protocolo para navegação web" },
+    { "primary": "FTP", "porta": 21, "descricao": "Transfere arquivos entre computadores" },
+    { "primary": "SFTP", "porta": 22, "descricao": "Transferência de arquivos protegida por criptografia" },
+    { "primary": "SSH", "porta": 22, "descricao": "Protocolo de controle remoto seguro" },
+    { "primary": "Telnet", "porta": 23, "descricao": "Acesso remoto sem criptografia" },
+    { "primary": "SMTP", "porta": 25, "descricao": "Envia mensagens eletrônicas entre servidores" },
+    { "primary": "POP3", "porta": 110, "descricao": "Recupera mensagens de um servidor de email" },
+    { "primary": "IMAP", "porta": 143, "descricao": "Permite gerenciar emails diretamente no servidor" },
+    { "primary": "DNS", "porta": 53, "descricao": "Converte nomes legíveis em endereços numéricos" },
+    { "primary": "DHCP", "porta": 67, "descricao": "Distribui endereços IP automaticamente" },
+    { "primary": "LDAP", "porta": 389, "descricao": "Consulta e organiza informações em diretórios de rede" },
+    { "primary": "LDAPS", "porta": 636, "descricao": "Versão protegida do protocolo de diretórios" },
+    { "primary": "NTP", "porta": 123, "descricao": "Sincroniza o relógio de dispositivos na rede" },
+    { "primary": "SNMP", "porta": 161, "descricao": "Coleta informações e gerencia equipamentos de rede" },
+    { "primary": "RDP", "porta": 3389, "descricao": "Acesso remoto a interfaces gráficas de sistemas" },
+    { "primary": "MySQL", "porta": 3306, "descricao": "Comunica-se com um banco de dados relacional" },
+    { "primary": "MSSQL", "porta": 1433, "descricao": "Permite conexão a um servidor de banco de dados Microsoft" },
+    { "primary": "Redis", "porta": 6379, "descricao": "Armazena dados temporários em memória para acesso rápido" },
+    { "primary": "PostgreSQL", "porta": 5432, "descricao": "Permite acesso a um banco de dados relacional avançado" }
+  ]
+}
