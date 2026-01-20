@@ -5,23 +5,19 @@ import { MatchEngine } from "../engines/MatchEngine.js";
 
 const app = document.getElementById("app");
 
-// Lista de engines disponíveis
 const engineMap = {
-  ClassificationEngine: ClassificationEngine,
-  MatchEngine: MatchEngine
+  ClassificationEngine,
+  MatchEngine
 };
 
-// Caminho base absoluto
-// Para GitHub Pages: inclui nome do repositório
-// Para localhost/file://: vazio
+// Base absoluta para fetch, funciona local e no GitHub Pages
 const basePath = window.location.hostname === "localhost" || window.location.protocol === "file:"
-  ? ""
-  : "/vertex"; // substitua "vertex" pelo nome do seu repositório
+  ? "" // localhost: fetch relativo funciona
+  : `${window.location.origin}/vertex`; // GitHub Pages: caminho absoluto para o repo
 
 async function startMenu() {
-  // Use basePath absoluto + /content
   const url = `${basePath}/content/index.json`;
-  console.log("Buscando conteúdo em:", url); // Para debug
+  console.log("Buscando conteúdo em:", url);
 
   const res = await fetch(url);
   if (!res.ok) {
@@ -36,7 +32,7 @@ async function startMenu() {
 
 async function startGame(content) {
   const url = `${basePath}/content/${content.file}`;
-  console.log("Buscando arquivo de jogo em:", url); // Para debug
+  console.log("Buscando arquivo de jogo em:", url);
 
   const res = await fetch(url);
   if (!res.ok) {
