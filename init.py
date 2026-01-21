@@ -3,6 +3,7 @@ import json
 
 engine_by_type = {
     "match": "MatchEngine",
+    "flow": "FlowEngine",
     "classification": "ClassificationEngine"
 }
 

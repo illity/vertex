@@ -2,12 +2,14 @@ import { MenuScreen } from "./MenuScreen.js";
 import { GameScreen } from "../ui/GameScreen.js";
 import { ClassificationEngine } from "../engines/ClassificationEngine.js";
 import { MatchEngine } from "../engines/MatchEngine.js";
+import { FlowEngine } from "../engines/FlowEngine.js";
 
 const app = document.getElementById("app");
 
 const engineMap = {
   ClassificationEngine,
-  MatchEngine
+  MatchEngine,
+  FlowEngine
 };
 
 // Base absoluta para fetch, funciona local e no GitHub Pages

@@ -1,0 +1,45 @@
+{
+  "type": "flow",
+  "title": "Nacionalidade Brasileira",
+  "description": "Monte corretamente o fluxo do direito à nacionalidade brasileira.",
+  "data": {
+    "nodes": [
+      { "id": "start", "label": "Nascimento", "nodeType": "start" },
+
+      { "id": "born_brazil", "label": "Nasceu no Brasil?", "nodeType": "condition" },
+      { "id": "parents_foreign_service", "label": "Pais estrangeiros a serviço de seu país?", "nodeType": "condition" },
+
+      { "id": "parent_brazilian", "label": "Pai ou mãe brasileira?", "nodeType": "condition" },
+
+      { "id": "born_abroad_service_brazil", "label": "Pais brasileiros a serviço do Brasil?", "nodeType": "condition" },
+      { "id": "registered_abroad", "label": "Foi registrado em repartição brasileira?", "nodeType": "condition" },
+      { "id": "resides_brazil_after_18", "label": "Reside no Brasil após os 18 anos?", "nodeType": "condition" },
+
+      { "id": "brazilian", "label": "Brasileiro nato", "nodeType": "result" },
+      { "id": "brazilian_potestative", "label": "Pode requerer nacionalidade brasileira (direito potestativo)", "nodeType": "result" },
+      { "id": "not_brazilian", "label": "Não é brasileiro nato", "nodeType": "result" }
+    ],
+
+    "edges": [
+      { "from": "start", "to": "born_brazil", "port": "next" },
+
+      { "from": "born_brazil", "to": "parents_foreign_service", "port": "yes" },
+      { "from": "born_brazil", "to": "parent_brazilian", "port": "no" },
+
+      { "from": "parents_foreign_service", "to": "not_brazilian", "port": "yes" },
+      { "from": "parents_foreign_service", "to": "brazilian", "port": "no" },
+
+      { "from": "parent_brazilian", "to": "born_abroad_service_brazil", "port": "yes" },
+      { "from": "parent_brazilian", "to": "not_brazilian", "port": "no" },
+
+      { "from": "born_abroad_service_brazil", "to": "brazilian", "port": "yes" },
+      { "from": "born_abroad_service_brazil", "to": "registered_abroad", "port": "no" },
+
+      { "from": "registered_abroad", "to": "brazilian", "port": "yes" },
+      { "from": "registered_abroad", "to": "resides_brazil_after_18", "port": "no" },
+
+      { "from": "resides_brazil_after_18", "to": "brazilian_potestative", "port": "yes" },
+      { "from": "resides_brazil_after_18", "to": "not_brazilian", "port": "no" }
+    ]
+  }
+}
