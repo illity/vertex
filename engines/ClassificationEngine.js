@@ -15,7 +15,10 @@ export class ClassificationEngine {
 
     start(container) {
         this.container = container;
-        const categories = Array.from(new Set(this.content.data.map(i => i.category)));
+
+        const categories = Array.from(
+            new Set(this.content.data.map(i => i.category))
+        );
 
         const rows = this.content.data.map((item, idx) => ({
             id: idx.toString(),
@@ -33,17 +36,63 @@ export class ClassificationEngine {
         this.render(container);
     }
 
+    createDraggableItem(row) {
+        const itemDiv = document.createElement("div");
+        itemDiv.textContent = row.label;
+        itemDiv.classList.add("draggable-item");
+        itemDiv.dataset.id = row.id;
+
+        itemDiv.style.padding = "4px 8px";
+        itemDiv.style.margin = "2px 0";
+        itemDiv.style.border = "1px solid #333";
+        itemDiv.style.borderRadius = "4px";
+        itemDiv.style.cursor = "grab";
+        itemDiv.style.background =
+            row.correct === true
+                ? "rgba(160, 230, 160, 0.6)"
+                : row.correct === false
+                ? "rgba(246, 160, 160, 0.6)"
+                : "#fff";
+
+        interact(itemDiv).draggable({
+            inertia: true,
+            autoScroll: true,
+            listeners: {
+                start: () => {
+                    document.body.style.touchAction = "none";
+                },
+                move: event => {
+                    const target = event.target;
+                    const x = (parseFloat(target.dataset.x) || 0) + event.dx;
+                    const y = (parseFloat(target.dataset.y) || 0) + event.dy;
+
+                    target.style.transform = `translate(${x}px, ${y}px)`;
+                    target.dataset.x = x;
+                    target.dataset.y = y;
+                },
+                end: event => {
+                    document.body.style.touchAction = "auto";
+                    event.target.style.transform = "none";
+                    delete event.target.dataset.x;
+                    delete event.target.dataset.y;
+                }
+            }
+        });
+
+        return itemDiv;
+    }
+
     render(container = this.container) {
         if (!container || !this.state) return;
         container.innerHTML = "";
 
-        // --- Categorias ---
+        // ---- ZONAS (CATEGORIAS) ----
         const categoriesDiv = document.createElement("div");
         categoriesDiv.style.display = "flex";
         categoriesDiv.style.flexWrap = "wrap";
         categoriesDiv.style.gap = "12px";
 
-        this.state.categories.forEach(cat => {
+        this.state.categories.forEach(category => {
             const zoneDiv = document.createElement("div");
             zoneDiv.style.flex = "1";
             zoneDiv.style.minHeight = "120px";
@@ -53,108 +102,54 @@ export class ClassificationEngine {
             zoneDiv.style.background = "#f9f9f9";
 
             const label = document.createElement("div");
-            label.textContent = cat;
+            label.textContent = category;
             label.style.fontWeight = "bold";
             label.style.marginBottom = "8px";
             zoneDiv.appendChild(label);
 
-            const itemsInCategory = this.state.rows.filter(r => r.currentCategory === cat);
-            itemsInCategory.forEach(r => {
-                const itemDiv = document.createElement("div");
-                itemDiv.textContent = r.label;
-                itemDiv.style.padding = "4px 8px";
-                itemDiv.style.margin = "2px 0";
-                itemDiv.style.border = "1px solid #ccc";
-                itemDiv.style.borderRadius = "4px";
-                itemDiv.style.background =
-                    r.correct === true ? "rgba(160, 230, 160, 0.6)" :
-                        r.correct === false ? "rgba(246, 160, 160, 0.6)" : "#fff";
-                zoneDiv.appendChild(itemDiv);
-            });
+            this.state.rows
+                .filter(r => r.currentCategory === category)
+                .forEach(r => {
+                    zoneDiv.appendChild(this.createDraggableItem(r));
+                });
 
             categoriesDiv.appendChild(zoneDiv);
 
-            // Interact.js: tornar zona droppable
             interact(zoneDiv).dropzone({
-                accept: '.draggable-item',
+                accept: ".draggable-item",
                 overlap: 0.5,
                 ondrop: event => {
                     const itemId = event.relatedTarget.dataset.id;
-                    this.onDrop(itemId, cat);
+                    this.onDrop(itemId, category);
                 }
             });
         });
 
         container.appendChild(categoriesDiv);
 
-        // --- Draggables ---
-        const draggablesDiv = document.createElement("div");
-        draggablesDiv.style.display = "flex";
-        draggablesDiv.style.flexWrap = "wrap";
-        draggablesDiv.style.marginTop = "12px";
-        draggablesDiv.style.gap = "8px";
+        // ---- ITENS SEM CATEGORIA ----
+        const poolDiv = document.createElement("div");
+        poolDiv.style.display = "flex";
+        poolDiv.style.flexWrap = "wrap";
+        poolDiv.style.marginTop = "12px";
+        poolDiv.style.gap = "8px";
 
-        const remainingItems = this.state.rows.filter(r => !r.currentCategory);
-
-        remainingItems.forEach(r => {
-            const itemDiv = document.createElement("div");
-            itemDiv.textContent = r.label;
-            itemDiv.classList.add("draggable-item"); // importante para Interact.js
-            itemDiv.dataset.id = r.id;
-            itemDiv.style.padding = "4px 8px";
-            itemDiv.style.border = "1px solid #333";
-            itemDiv.style.borderRadius = "4px";
-            itemDiv.style.background = "#fff";
-            itemDiv.style.cursor = "grab";
-
-            draggablesDiv.appendChild(itemDiv);
-
-            // Interact.js: tornar item arrastável
-            interact(itemDiv).draggable({
-                inertia: true,
-                modifiers: [
-                    interact.modifiers.restrictRect({
-                        restriction: container,
-                        endOnly: true
-                    })
-                ],
-                autoScroll: true,
-                listeners: {
-                    start: event => {
-                        // Impede scroll da página enquanto arrasta
-                        document.body.style.touchAction = 'none';
-                    },
-                    move: event => {
-                        const target = event.target;
-                        const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
-                        const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-
-                        target.style.transform = `translate(${x}px, ${y}px)`;
-                        target.setAttribute('data-x', x);
-                        target.setAttribute('data-y', y);
-                    },
-                    end: event => {
-                        // Restaura scroll normal
-                        document.body.style.touchAction = 'auto';
-
-                        // Volta à posição original após soltar
-                        event.target.style.transform = 'none';
-                        event.target.removeAttribute('data-x');
-                        event.target.removeAttribute('data-y');
-                    }
-                }
+        this.state.rows
+            .filter(r => !r.currentCategory)
+            .forEach(r => {
+                poolDiv.appendChild(this.createDraggableItem(r));
             });
 
-        });
-
-        container.appendChild(draggablesDiv);
+        container.appendChild(poolDiv);
     }
 
     onDrop(itemId, category) {
         const row = this.state.rows.find(r => r.id === itemId);
         if (!row) return;
+
         row.currentCategory = category;
         row.correct = row.correctCategory === category;
+
         this.render();
     }
 }
