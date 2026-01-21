@@ -1,0 +1,15 @@
+{
+  "type": "classification",
+  "title": "Classificação de Palavras - Português",
+  "description": "Classifique as palavras em substantivo, verbo ou adjetivo.",
+  "data": [
+    { "label": "casa", "category": "Substantivo" },
+    { "label": "carro", "category": "Substantivo" },
+    { "label": "correr", "category": "Verbo" },
+    { "label": "pular", "category": "Verbo" },
+    { "label": "rápido", "category": "Adjetivo" },
+    { "label": "verde", "category": "Adjetivo" },
+    { "label": "árvore", "category": "Substantivo" },
+    { "label": "brincar", "category": "Verbo" }
+  ]
+}

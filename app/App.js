@@ -25,13 +25,15 @@ async function startMenu() {
     return;
   }
   const contents = await res.json();
+  console.log(contents)
 
   const menu = new MenuScreen(app, contents, startGame);
   menu.mount();
 }
 
 async function startGame(content) {
-  const url = `${basePath}/content/${content.file}`;
+  console.log(content.path)
+  const url = `${basePath}/${content.file}`;
   console.log("Buscando arquivo de jogo em:", url);
 
   const res = await fetch(url);

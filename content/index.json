@@ -1,16 +1,34 @@
 [
   {
-    "id": "classification",
-    "title": "Classificação",
-    "description": "Classifique protocolos, conceitos, etc.",
+    "path": [
+      "Português"
+    ],
+    "type": "classification",
+    "title": "Classificação de Palavras - Português",
+    "description": "Classifique as palavras em substantivo, verbo ou adjetivo.",
     "engine": "ClassificationEngine",
-    "file": "sample-classification.json"
+    "file": "content\\Português\\sample-classification.json"
   },
   {
-    "id": "match",
-    "title": "Ligar pares",
-    "description": "Ligue protocolos e portas ou conceitos",
+    "path": [
+      "TI",
+      "network"
+    ],
+    "type": "classification",
+    "title": "Classificação OSI",
+    "description": "Classifique cada item na camada correspondente do modelo OSI (1 a 7).",
+    "engine": "ClassificationEngine",
+    "file": "content\\TI\\network\\sample-classification.json"
+  },
+  {
+    "path": [
+      "TI",
+      "network"
+    ],
+    "type": "match",
+    "title": "Protocolos e Portas de Rede",
+    "description": "Associe cada protocolo com a porta correspondente e sua descrição (não óbvia).",
     "engine": "MatchEngine",
-    "file": "sample-match.json"
+    "file": "content\\TI\\network\\sample-match.json"
   }
 ]
