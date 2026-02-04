@@ -1,0 +1,42 @@
+{
+  "type": "classification",
+  "title": "Práticas e Conceitos nas Metodologias Ágeis",
+  "description": "Classifique cada prática ou conceito na metodologia ágil correspondente. Alguns itens estão propositalmente incorretos, porém plausíveis.",
+  "data": [
+    { "label": "Sprint", "category": "Scrum" },
+    { "label": "Sprint Planning", "category": "Scrum" },
+    { "label": "Daily Scrum", "category": "Scrum" },
+    { "label": "Sprint Review", "category": "Scrum" },
+    { "label": "Sprint Retrospective", "category": "Scrum" },
+    { "label": "Product Backlog", "category": "Scrum" },
+    { "label": "Scrum Master", "category": "Scrum" },
+    { "label": "Product Owner", "category": "Scrum" },
+    { "label": "Definition of Done", "category": "Scrum" },
+
+    { "label": "Limite de WIP", "category": "Kanban" },
+    { "label": "Fluxo Contínuo", "category": "Kanban" },
+    { "label": "Sistema Puxado (Pull System)", "category": "Kanban" },
+    { "label": "Gerenciamento do Fluxo", "category": "Kanban" },
+    { "label": "Kanban Board", "category": "Kanban" },
+
+    { "label": "Programação em Par", "category": "XP" },
+    { "label": "Desenvolvimento Orientado a Testes (TDD)", "category": "XP" },
+    { "label": "Integração Contínua", "category": "XP" },
+    { "label": "Refatoração Contínua", "category": "XP" },
+    { "label": "Propriedade Coletiva do Código", "category": "XP" },
+
+    { "label": "Eliminar Desperdícios", "category": "Lean" },
+    { "label": "Amplificar Aprendizado", "category": "Lean" },
+    { "label": "Decidir o Mais Tarde Possível", "category": "Lean" },
+    { "label": "Entregar o Mais Rápido Possível", "category": "Lean" },
+    { "label": "Empoderar a Equipe", "category": "Lean" },
+
+    { "label": "Backlog Refinement", "category": "Errados" },
+    { "label": "Retrospectiva Contínua", "category": "Errados" },
+    { "label": "Timebox Fixo para Todas as Atividades", "category": "Errados" },
+    { "label": "Kaizen Diário Obrigatório", "category": "Errados" },
+    { "label": "Limite de WIP por Pessoa", "category": "Errados" },
+    { "label": "Entrega Incremental por Fase", "category": "Errados" },
+    { "label": "Histórias de Usuário Padronizadas", "category": "Errados" }
+  ]
+}

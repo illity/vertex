@@ -1,0 +1,27 @@
+{
+  "type": "match",
+  "title": "Tipos de Test Doubles",
+  "description": "Associe cada tipo de double ao seu papel durante a execução dos testes.",
+  "data": [
+    {
+      "primary": "Dummy",
+      "descricao": "Objeto passado apenas para satisfazer parâmetros, sem comportamento relevante"
+    },
+    {
+      "primary": "Stub",
+      "descricao": "Fornece respostas pré-definidas para chamadas feitas durante o teste"
+    },
+    {
+      "primary": "Mock",
+      "descricao": "Valida interações esperadas, como chamadas de métodos e quantidade de execuções"
+    },
+    {
+      "primary": "Spy",
+      "descricao": "Registra informações sobre chamadas reais para posterior verificação"
+    },
+    {
+      "primary": "Fake",
+      "descricao": "Implementação funcional simplificada, geralmente usada no lugar de componentes reais"
+    }
+  ]
+}

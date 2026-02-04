@@ -1,9 +1,12 @@
-export class FlowEngine {
+import { BaseEngine } from "../engines/BaseEngine.js";
+
+export class FlowEngine extends BaseEngine{
   static NODE_HALF_WIDTH = 55;
   static NODE_HALF_HEIGHT = 30;
   static PADDING = 20;
 
   constructor(content) {
+    super(content);
     this.content = content;
     this.container = null;
     this.svg = null;
@@ -19,6 +22,7 @@ export class FlowEngine {
 
   start(container) {
     this.container = container;
+    super.start(container);
     container.innerHTML = "";
 
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -39,13 +43,14 @@ export class FlowEngine {
     const minY = FlowEngine.NODE_HALF_HEIGHT + FlowEngine.PADDING;
     const maxY = rect.height - FlowEngine.NODE_HALF_HEIGHT - FlowEngine.PADDING;
 
-    // 🎯 distribuição aleatória inicial
-    this.state.nodes = this.content.data.nodes.map(n => ({
-      ...n,
-      x: minX + Math.random() * (maxX - minX),
-      y: minY + Math.random() * (maxY - minY)
-    }));
-
+    // 🔥 ONLY generate nodes if no saved state
+    if (!this.state.nodes || this.state.nodes.length === 0) {
+      this.state.nodes = this.content.data.nodes.map(n => ({
+        ...n,
+        x: minX + Math.random() * (maxX - minX),
+        y: minY + Math.random() * (maxY - minY)
+      }));
+    }
     svg.addEventListener("pointermove", e => this.onPointerMove(e));
     svg.addEventListener("pointerup", () => this.onPointerUp());
     svg.addEventListener("pointerleave", () => this.onPointerUp());
@@ -115,8 +120,8 @@ export class FlowEngine {
 
     const sx =
       conn.port === "yes" ? from.x + 50 :
-      conn.port === "no" ? from.x - 50 :
-      from.x + 55;
+        conn.port === "no" ? from.x - 50 :
+          from.x + 55;
 
     const sy = from.y;
 
@@ -199,7 +204,7 @@ export class FlowEngine {
     c.setAttribute(
       "fill",
       this.state.selectedPort?.nodeId === node.id &&
-      this.state.selectedPort?.port === port
+        this.state.selectedPort?.port === port
         ? "#000"
         : color
     );
@@ -270,6 +275,7 @@ export class FlowEngine {
   }
 
   onPointerUp() {
+    super.saveState();
     this.state.draggingNode = null;
   }
 
@@ -294,5 +300,17 @@ export class FlowEngine {
     if (!correct) return;
 
     this.state.connections.push({ from, to, port, correct });
+    super.saveState(); // ✅
+  }
+  exportState() {
+    return {
+      nodes: this.state.nodes,
+      connections: this.state.connections
+    };
+  }
+
+  importState(state) {
+    if (state.nodes) this.state.nodes = state.nodes;
+    if (state.connections) this.state.connections = state.connections;
   }
 }

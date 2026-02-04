@@ -1,0 +1,39 @@
+{
+  "type": "match",
+  "title": "Categorias de Testes de Software",
+  "description": "Associe cada categoria de teste à sua finalidade principal.",
+  "data": [
+    {
+      "primary": "Teste Unitário",
+      "descricao": "Verifica o comportamento de pequenas partes isoladas do código, geralmente funções ou métodos"
+    },
+    {
+      "primary": "Teste de Integração",
+      "descricao": "Avalia a comunicação e interação entre componentes ou módulos combinados"
+    },
+    {
+      "primary": "Teste de Sistema",
+      "descricao": "Valida o comportamento do sistema completo em um ambiente próximo ao real"
+    },
+    {
+      "primary": "Teste de Aceitação",
+      "descricao": "Confirma se o software atende aos critérios definidos pelo usuário ou negócio"
+    },
+    {
+      "primary": "Teste de Regressão",
+      "descricao": "Garante que funcionalidades existentes não foram quebradas após alterações"
+    },
+    {
+      "primary": "Teste de Desempenho",
+      "descricao": "Mede tempo de resposta, uso de recursos e estabilidade sob determinadas condições"
+    },
+    {
+      "primary": "Teste de Carga",
+      "descricao": "Avalia o comportamento do sistema sob volume esperado de usuários ou requisições"
+    },
+    {
+      "primary": "Teste de Estresse",
+      "descricao": "Analisa os limites do sistema quando submetido a condições extremas"
+    }
+  ]
+}

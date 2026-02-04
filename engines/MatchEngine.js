@@ -1,20 +1,16 @@
-export class MatchEngine {
+import { BaseEngine } from "../engines/BaseEngine.js";
+
+export class MatchEngine extends BaseEngine {
   constructor(content, primaryKey) {
+    super(content);
     this.content = content;
     this.primaryKey = primaryKey || 'primary';
-    this.container = null;
-
-    this.state = {
-      columns: [],
-      columnItems: {},
-      correctMatches: {}
-    };
-
     this.connections = [];
   }
 
   start(container) {
     this.container = container;
+    super.start(container);
     if (!this.content?.data?.length) return;
 
     let keys = Object.keys(this.content.data[0]).filter(k => k != null);
@@ -46,6 +42,7 @@ export class MatchEngine {
 
     this.state = { columns, columnItems, correctMatches };
     this.render();
+    this.updateConnections();
   }
 
   shuffleArray(array) {
@@ -212,6 +209,9 @@ export class MatchEngine {
       to: { col: toCol, value: toVal },
       status
     });
+
+    super.saveState();
+
   }
 
   updateConnections() {
@@ -246,6 +246,7 @@ export class MatchEngine {
       line.addEventListener("click", e => {
         e.stopPropagation();
         this.connections = this.connections.filter(c => c.id !== conn.id);
+        super.saveState();
         this.updateConnections();
       });
 
@@ -257,5 +258,16 @@ export class MatchEngine {
     return this.container.querySelector(
       `[data-col="${col}"][data-value="${value}"]`
     );
+  }
+  exportState() {
+    return {
+      connections: this.connections
+    };
+  }
+
+  importState(state) {
+    if (state.connections) {
+      this.connections = state.connections;
+    }
   }
 }

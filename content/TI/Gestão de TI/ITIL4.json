@@ -1,0 +1,41 @@
+{
+  "type": "classification",
+  "title": "Classificação ITIL 4",
+  "description": "Classifique cada item na categoria correspondente do ITIL 4. Alguns itens estão propositalmente incorretos.",
+  "data": [
+    { "label": "Organizações e Pessoas", "category": "Dimensões" },
+    { "label": "Informação e Tecnologia", "category": "Dimensões" },
+    { "label": "Parceiros e Fornecedores", "category": "Dimensões" },
+    { "label": "Fluxos de Valor e Processos", "category": "Dimensões" },
+
+    { "label": "Foque no Valor", "category": "Princípios Orientadores" },
+    { "label": "Comece onde você está", "category": "Princípios Orientadores" },
+    { "label": "Progrida Iterativamente com Feedback", "category": "Princípios Orientadores" },
+    { "label": "Colabore e Promova Visibilidade", "category": "Princípios Orientadores" },
+    { "label": "Pense e Trabalhe de Forma Holística", "category": "Princípios Orientadores" },
+    { "label": "Mantenha Simples e Prático", "category": "Princípios Orientadores" },
+    { "label": "Otimize e Automatize", "category": "Princípios Orientadores" },
+
+    { "label": "Planejar", "category": "Cadeia de Valor" },
+    { "label": "Melhorar", "category": "Cadeia de Valor" },
+    { "label": "Engajar", "category": "Cadeia de Valor" },
+    { "label": "Desenhar e Transicionar", "category": "Cadeia de Valor" },
+    { "label": "Obter / Construir", "category": "Cadeia de Valor" },
+    { "label": "Entregar e Suportar", "category": "Cadeia de Valor" },
+
+    { "label": "Avaliar", "category": "Governança" },
+    { "label": "Direcionar", "category": "Governança" },
+    { "label": "Monitorar", "category": "Governança" },
+
+    { "label": "Pessoas, Processos e Tecnologia", "category": "Errados" },
+    { "label": "Infraestrutura e Aplicações", "category": "Errados" },
+    { "label": "Melhoria Contínua", "category": "Errados" },
+    { "label": "Satisfação do Cliente em Primeiro Lugar", "category": "Errados" },
+    { "label": "Adapte-se a Mudanças Rápidas", "category": "Errados" },
+    { "label": "Transição de Serviço", "category": "Errados" },
+    { "label": "Operação de Serviço", "category": "Errados" },
+    { "label": "Estratégia de Serviço", "category": "Errados" },
+    { "label": "Planejar, Construir, Executar e Monitorar", "category": "Errados" },
+    { "label": "Definir KPIs e OKRs", "category": "Errados" }
+  ]
+}

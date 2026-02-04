@@ -5,7 +5,7 @@
     ],
     "type": "flow",
     "title": "Nacionalidade Brasileira",
-    "description": "testar conhecimentos sobre nacionalidade brasileira",
+    "description": "Monte corretamente o fluxo do direito à nacionalidade brasileira.",
     "engine": "FlowEngine",
     "file": "content\\Direito\\nacionalidade.json"
   },
@@ -18,6 +18,50 @@
     "description": "Classifique as palavras em substantivo, verbo ou adjetivo.",
     "engine": "ClassificationEngine",
     "file": "content\\Português\\sample-classification.json"
+  },
+  {
+    "path": [
+      "TI",
+      "Engenharia de Software"
+    ],
+    "type": "match",
+    "title": "Tipos de Test Doubles",
+    "description": "Associe cada tipo de double ao seu papel durante a execução dos testes.",
+    "engine": "MatchEngine",
+    "file": "content\\TI\\Engenharia de Software\\doubles.json"
+  },
+  {
+    "path": [
+      "TI",
+      "Engenharia de Software"
+    ],
+    "type": "classification",
+    "title": "Práticas e Conceitos nas Metodologias Ágeis",
+    "description": "Classifique cada prática ou conceito na metodologia ágil correspondente. Alguns itens estão propositalmente incorretos, porém plausíveis.",
+    "engine": "ClassificationEngine",
+    "file": "content\\TI\\Engenharia de Software\\Metodologias.json"
+  },
+  {
+    "path": [
+      "TI",
+      "Engenharia de Software"
+    ],
+    "type": "match",
+    "title": "Categorias de Testes de Software",
+    "description": "Associe cada categoria de teste à sua finalidade principal.",
+    "engine": "MatchEngine",
+    "file": "content\\TI\\Engenharia de Software\\testes.json"
+  },
+  {
+    "path": [
+      "TI",
+      "Gestão de TI"
+    ],
+    "type": "classification",
+    "title": "Classificação ITIL 4",
+    "description": "Classifique cada item na categoria correspondente do ITIL 4. Alguns itens estão propositalmente incorretos.",
+    "engine": "ClassificationEngine",
+    "file": "content\\TI\\Gestão de TI\\ITIL4.json"
   },
   {
     "path": [

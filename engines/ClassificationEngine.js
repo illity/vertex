@@ -1,5 +1,8 @@
-export class ClassificationEngine {
+import { BaseEngine } from "../engines/BaseEngine.js";
+
+export class ClassificationEngine extends BaseEngine {
     constructor(content) {
+        super(content);
         this.content = content;
         this.state = null;
         this.container = null;
@@ -14,27 +17,31 @@ export class ClassificationEngine {
     }
 
     start(container) {
+        super.start(container);
         this.container = container;
 
         const categories = Array.from(
             new Set(this.content.data.map(i => i.category))
         );
 
-        const rows = this.content.data.map((item, idx) => ({
-            id: idx.toString(),
-            label: item.label,
-            correctCategory: item.category,
-            currentCategory: null,
-            correct: null
-        }));
+        if (!this.state) {
+            const rows = this.content.data.map((item, idx) => ({
+                id: idx.toString(),
+                label: item.label,
+                correctCategory: item.category,
+                currentCategory: null,
+                correct: null
+            }));
 
-        this.state = {
-            categories,
-            rows: this.shuffleArray(rows)
-        };
+            this.state = {
+                categories,
+                rows: this.shuffleArray(rows)
+            };
+        }
 
-        this.render(container);
+        this.render();
     }
+
 
     createDraggableItem(row) {
         const itemDiv = document.createElement("div");
@@ -51,8 +58,8 @@ export class ClassificationEngine {
             row.correct === true
                 ? "rgba(160, 230, 160, 0.6)"
                 : row.correct === false
-                ? "rgba(246, 160, 160, 0.6)"
-                : "#fff";
+                    ? "rgba(246, 160, 160, 0.6)"
+                    : "#fff";
 
         interact(itemDiv).draggable({
             inertia: true,
@@ -150,6 +157,28 @@ export class ClassificationEngine {
         row.currentCategory = category;
         row.correct = row.correctCategory === category;
 
+        super.saveState(); // 💾 persist
         this.render();
     }
+    
+    exportState() {
+        return {
+            rows: this.state.rows
+        };
+    }
+
+    importState(state) {
+        if (!state) return;
+
+        // categories come from content (source of truth)
+        const categories = Array.from(
+            new Set(this.content.data.map(i => i.category))
+        );
+
+        this.state = {
+            categories,
+            rows: state.rows || []
+        };
+    }
+
 }
