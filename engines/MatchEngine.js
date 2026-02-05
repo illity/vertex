@@ -101,7 +101,7 @@ export class MatchEngine extends BaseEngine {
         itemDiv.style.margin = "2px 0";
         itemDiv.style.border = "1px solid #333";
         itemDiv.style.borderRadius = "4px";
-        itemDiv.style.background = "#fff";
+        itemDiv.style.background = "#48119e";
         itemDiv.style.cursor = "grab";
 
         itemDiv.classList.add("match-item");

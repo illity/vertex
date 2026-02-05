@@ -1,6 +1,16 @@
 [
   {
     "path": [
+      "AFO"
+    ],
+    "type": "flow",
+    "title": "Competência Tributária Ativa - Completo",
+    "description": "Conecte cada tributo ao ente que possui competência tributária ativa e registre relações instituidor/cobrador.",
+    "engine": "FlowEngine",
+    "file": "content\\AFO\\competenciaTributaria.json"
+  },
+  {
+    "path": [
       "Direito"
     ],
     "type": "flow",

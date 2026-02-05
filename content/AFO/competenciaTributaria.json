@@ -1,0 +1,57 @@
+{
+  "type": "flow",
+  "title": "Competência Tributária Ativa - Completo",
+  "description": "Conecte cada tributo ao ente que possui competência tributária ativa e registre relações instituidor/cobrador.",
+  "data": {
+    "nodes": [
+      { "id": "ir", "label": "Imposto de Renda (IR)", "nodeType": "item" },
+      { "id": "ipi", "label": "IPI", "nodeType": "item" },
+      { "id": "ii", "label": "Imposto de Importação (II)", "nodeType": "item" },
+      { "id": "ie", "label": "Imposto de Exportação (IE)", "nodeType": "item" },
+      { "id": "iof", "label": "IOF", "nodeType": "item" },
+      { "id": "pis", "label": "PIS/PASEP", "nodeType": "item" },
+      { "id": "cofins", "label": "COFINS", "nodeType": "item" },
+      { "id": "csll", "label": "CSLL", "nodeType": "item" },
+      { "id": "icms", "label": "ICMS", "nodeType": "item" },
+      { "id": "ipva", "label": "IPVA", "nodeType": "item" },
+      { "id": "itcmd", "label": "ITCMD", "nodeType": "item" },
+      { "id": "iss", "label": "ISS", "nodeType": "item" },
+      { "id": "iptu", "label": "IPTU", "nodeType": "item" },
+      { "id": "itbi", "label": "ITBI", "nodeType": "item" },
+      { "id": "taxas", "label": "Taxas municipais/estaduais", "nodeType": "item" },
+      { "id": "municipality", "label": "Município", "nodeType": "entity" },
+      { "id": "state", "label": "Estado", "nodeType": "entity" },
+      { "id": "federal", "label": "União", "nodeType": "entity" },
+      { "id": "df", "label": "Distrito Federal", "nodeType": "entity" },
+      { "id": "can_institute", "label": "Pode instituir", "nodeType": "relation" },
+      { "id": "can_collect", "label": "Pode cobrar", "nodeType": "relation" }
+    ],
+    "edges": [
+      { "from": "ir", "to": "federal", "relations": ["Pode instituir", "Pode cobrar"] },
+      { "from": "ipi", "to": "federal", "relations": ["Pode instituir", "Pode cobrar"] },
+      { "from": "ii", "to": "federal", "relations": ["Pode instituir", "Pode cobrar"] },
+      { "from": "ie", "to": "federal", "relations": ["Pode instituir", "Pode cobrar"] },
+      { "from": "iof", "to": "federal", "relations": ["Pode instituir", "Pode cobrar"] },
+      { "from": "pis", "to": "federal", "relations": ["Pode instituir", "Pode cobrar"] },
+      { "from": "cofins", "to": "federal", "relations": ["Pode instituir", "Pode cobrar"] },
+      { "from": "csll", "to": "federal", "relations": ["Pode instituir", "Pode cobrar"] },
+
+      { "from": "icms", "to": "state", "relations": ["Pode instituir", "Pode cobrar"] },
+      { "from": "ipva", "to": "state", "relations": ["Pode instituir", "Pode cobrar"] },
+      { "from": "itcmd", "to": "state", "relations": ["Pode instituir", "Pode cobrar"] },
+
+      { "from": "iss", "to": "municipality", "relations": ["Pode instituir", "Pode cobrar"] },
+      { "from": "iptu", "to": "municipality", "relations": ["Pode instituir", "Pode cobrar"] },
+      { "from": "itbi", "to": "municipality", "relations": ["Pode instituir", "Pode cobrar"] },
+      { "from": "taxas", "to": "municipality", "relations": ["Pode instituir", "Pode cobrar"] },
+
+      { "from": "icms", "to": "df", "relations": ["Pode instituir", "Pode cobrar"] },
+      { "from": "ipva", "to": "df", "relations": ["Pode instituir", "Pode cobrar"] },
+      { "from": "itcmd", "to": "df", "relations": ["Pode instituir", "Pode cobrar"] },
+      { "from": "iss", "to": "df", "relations": ["Pode instituir", "Pode cobrar"] },
+      { "from": "iptu", "to": "df", "relations": ["Pode instituir", "Pode cobrar"] },
+      { "from": "itbi", "to": "df", "relations": ["Pode instituir", "Pode cobrar"] },
+      { "from": "taxas", "to": "df", "relations": ["Pode instituir", "Pode cobrar"] }
+    ]
+  }
+}

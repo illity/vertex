@@ -59,7 +59,7 @@ export class ClassificationEngine extends BaseEngine {
                 ? "rgba(160, 230, 160, 0.6)"
                 : row.correct === false
                     ? "rgba(246, 160, 160, 0.6)"
-                    : "#fff";
+                    : "#48119e";
 
         interact(itemDiv).draggable({
             inertia: true,
@@ -106,7 +106,7 @@ export class ClassificationEngine extends BaseEngine {
             zoneDiv.style.border = "2px dashed #aaa";
             zoneDiv.style.padding = "8px";
             zoneDiv.style.borderRadius = "4px";
-            zoneDiv.style.background = "#f9f9f9";
+            zoneDiv.style.background = "#48119e";
 
             const label = document.createElement("div");
             label.textContent = category;
