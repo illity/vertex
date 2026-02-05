@@ -4,8 +4,6 @@
   "description": "Monte corretamente o fluxo do direito à nacionalidade brasileira.",
   "data": {
     "nodes": [
-      { "id": "start", "label": "Nascimento", "nodeType": "start" },
-
       { "id": "born_brazil", "label": "Nasceu no Brasil?", "nodeType": "condition" },
       { "id": "parents_foreign_service", "label": "Pais estrangeiros a serviço de seu país?", "nodeType": "condition" },
 
@@ -21,8 +19,6 @@
     ],
 
     "edges": [
-      { "from": "start", "to": "born_brazil", "port": "next" },
-
       { "from": "born_brazil", "to": "parents_foreign_service", "port": "yes" },
       { "from": "born_brazil", "to": "parent_brazilian", "port": "no" },
 
