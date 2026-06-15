@@ -210,6 +210,152 @@ function gerarQuestaoTeorica() {
 
         document.getElementById("tituloQuestao").innerText = "Exercício de Estrutura: DVA";
         document.getElementById("enunciadoQuestao").innerText = "Com base nas contas apresentadas e na NBC TG 09, elabore a DVA, determinando: Valor Adicionado Bruto, Valor Adicionado Líquido Produzido pela Entidade, Valor Adicionado Total a Distribuir e a distribuição para Pessoal, Governo, Capital de Terceiros e Capital Próprio.";
+    } else if (tipo === 'dfc') {
+
+        const saldoInicial = r(10, 30);
+
+        // Operacionais
+        const recebimentoClientes = r(50, 100);
+        const pagamentoFornecedores = r(20, 50);
+        const pagamentoSalarios = r(10, 30);
+
+        // Investimento
+        const compraImobilizado = r(10, 25);
+        const vendaImobilizado = r(5, 15);
+
+        // Financiamento
+        const emprestimoObtido = r(10, 30);
+        const pagamentoEmprestimo = r(5, 15);
+        const dividendosPagos = r(2, 10);
+
+        contasBase = [
+            {
+                conta: "Saldo Inicial de Caixa",
+                valor: saldoInicial,
+                afeta: true,
+                tag: "DFC_CAIXA"
+            },
+
+            {
+                conta: "Recebimento de Clientes",
+                valor: recebimentoClientes,
+                afeta: true,
+                tag: "DFC_OPER"
+            },
+
+            {
+                conta: "Pagamento a Fornecedores",
+                valor: pagamentoFornecedores,
+                afeta: true,
+                tag: "DFC_OPER"
+            },
+
+            {
+                conta: "Pagamento de Salários",
+                valor: pagamentoSalarios,
+                afeta: true,
+                tag: "DFC_OPER"
+            },
+
+            {
+                conta: "Aquisição de Imobilizado",
+                valor: compraImobilizado,
+                afeta: true,
+                tag: "DFC_INV"
+            },
+
+            {
+                conta: "Venda de Imobilizado",
+                valor: vendaImobilizado,
+                afeta: true,
+                tag: "DFC_INV"
+            },
+
+            {
+                conta: "Empréstimos Obtidos",
+                valor: emprestimoObtido,
+                afeta: true,
+                tag: "DFC_FIN"
+            },
+
+            {
+                conta: "Pagamento de Empréstimos",
+                valor: pagamentoEmprestimo,
+                afeta: true,
+                tag: "DFC_FIN"
+            },
+
+            {
+                conta: "Dividendos Pagos",
+                valor: dividendosPagos,
+                afeta: true,
+                tag: "DFC_FIN"
+            }
+        ];
+
+        // Cálculos
+
+        const fluxoOperacional =
+            recebimentoClientes
+            - pagamentoFornecedores
+            - pagamentoSalarios;
+
+        const fluxoInvestimento =
+            vendaImobilizado
+            - compraImobilizado;
+
+        const fluxoFinanciamento =
+            emprestimoObtido
+            - pagamentoEmprestimo
+            - dividendosPagos;
+
+        const variacaoLiquida =
+            fluxoOperacional
+            + fluxoInvestimento
+            + fluxoFinanciamento;
+
+        const saldoFinal =
+            saldoInicial
+            + variacaoLiquida;
+
+        solucaoExplicada = {
+            tipo: "DFC",
+            texto: `
+            <strong>Resolução da DFC:</strong><br><br>
+
+            <strong>Fluxo das Atividades Operacionais</strong><br>
+            • Recebimento de Clientes: R$ ${recebimentoClientes}<br>
+            • (–) Pagamento a Fornecedores: R$ ${pagamentoFornecedores}<br>
+            • (–) Pagamento de Salários: R$ ${pagamentoSalarios}<br>
+
+            <strong>👉 FCO = R$ ${fluxoOperacional}</strong><br><br>
+
+            <strong>Fluxo das Atividades de Investimento</strong><br>
+            • Venda de Imobilizado: R$ ${vendaImobilizado}<br>
+            • (–) Aquisição de Imobilizado: R$ ${compraImobilizado}<br>
+
+            <strong>👉 FCI = R$ ${fluxoInvestimento}</strong><br><br>
+
+            <strong>Fluxo das Atividades de Financiamento</strong><br>
+            • Empréstimos Obtidos: R$ ${emprestimoObtido}<br>
+            • (–) Pagamento de Empréstimos: R$ ${pagamentoEmprestimo}<br>
+            • (–) Dividendos Pagos: R$ ${dividendosPagos}<br>
+
+            <strong>👉 FCF = R$ ${fluxoFinanciamento}</strong><br><br>
+
+            <strong>👉 Variação Líquida de Caixa = R$ ${variacaoLiquida}</strong><br><br>
+
+            • Saldo Inicial de Caixa: R$ ${saldoInicial}<br>
+
+            <strong>👉 Saldo Final de Caixa = R$ ${saldoFinal}</strong>
+        `
+        };
+
+        document.getElementById("tituloQuestao").innerText =
+            "Exercício de Estrutura: DFC";
+
+        document.getElementById("enunciadoQuestao").innerText =
+            "Com base nas contas apresentadas, elabore a Demonstração dos Fluxos de Caixa (Método Direto), determinando: Fluxo Operacional, Fluxo de Investimento, Fluxo de Financiamento, Variação Líquida de Caixa e Saldo Final de Caixa.";
     }
 
     // 3. Adicionar Contas Patrimoniais Intrusas com base na dificuldade
