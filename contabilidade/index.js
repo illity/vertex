@@ -1,134 +1,327 @@
-// Catálogo de contas
-const accounts = {
-  receitaBruta: { synonyms: ["Receita Bruta", "Faturamento Bruto"] },
-  deducoes: { synonyms: ["Deduções", "Impostos sobre Vendas"] },
-  receitaLiquida: { synonyms: ["Receita Líquida", "Faturamento Líquido"] },
-  cmv: { synonyms: ["CMV", "Custo das Mercadorias Vendidas"] },
-  lucroBruto: { synonyms: ["Lucro Bruto"] },
-  despesasOperacionais: { synonyms: ["Despesas Operacionais"] },
-  resultadoFinanceiro: { synonyms: ["Resultado Financeiro"] },
-  tributos: { synonyms: ["Tributos", "Imposto de Renda"] },
-  lucroLiquido: { synonyms: ["Lucro Líquido"] },
-  outrosResultadosAbrangentes: { synonyms: ["Ganhos Atuariais", "Outros Resultados"] },
-  resultadoAbrangente: { synonyms: ["Resultado Abrangente"] }
-};
 
-// Catálogo de cálculos
-const calculators = {
-  receitaLiquida: ({ receitaBruta, deducoes }) => receitaBruta - deducoes,
-  lucroBruto: ({ receitaLiquida, cmv }) => receitaLiquida - cmv,
-  lucroLiquido: ({ lucroBruto, despesasOperacionais, resultadoFinanceiro, tributos }) =>
-    lucroBruto - despesasOperacionais + resultadoFinanceiro - tributos,
-  resultadoAbrangente: ({ lucroLiquido, outrosResultadosAbrangentes }) =>
-    lucroLiquido + outrosResultadosAbrangentes
-};
+let questaoAtual = null;
+let inicioQuestao = null;
+let intervaloCronometro = null;
 
-// Templates de exercícios
-const templates = [
-  {
-    id: "receitaLiquida",
-    module: "DRE",
-    variables: [
-      { id: "receitaBruta", min: 10, max: 20 },
-      { id: "deducoes", min: 2, max: 5 }
-    ],
-    calculator: "receitaLiquida",
-    question: "Receita Bruta = {receitaBruta}, Deduções = {deducoes}, Receita Líquida = ?",
-    explanation: "Receita Líquida = Receita Bruta − Deduções"
-  },
-  {
-    id: "lucroBruto",
-    module: "DRE",
-    variables: [
-      { id: "receitaLiquida", min: 8, max: 15 },
-      { id: "cmv", min: 3, max: 7 }
-    ],
-    calculator: "lucroBruto",
-    question: "Receita Líquida = {receitaLiquida}, CMV = {cmv}, Lucro Bruto = ?",
-    explanation: "Lucro Bruto = Receita Líquida − CMV"
-  },
-  {
-    id: "lucroLiquido",
-    module: "DRE",
-    variables: [
-      { id: "lucroBruto", min: 5, max: 12 },
-      { id: "despesasOperacionais", min: 2, max: 5 },
-      { id: "resultadoFinanceiro", min: -2, max: 2 },
-      { id: "tributos", min: 1, max: 3 }
-    ],
-    calculator: "lucroLiquido",
-    question: "Lucro Bruto = {lucroBruto}, Despesas = {despesasOperacionais}, Resultado Financeiro = {resultadoFinanceiro}, Tributos = {tributos}, Lucro Líquido = ?",
-    explanation: "Lucro Líquido = Lucro Bruto − Despesas + Resultado Financeiro − Tributos"
-  },
-  {
-    id: "resultadoAbrangente",
-    module: "DRA",
-    variables: [
-      { id: "lucroLiquido", min: 5, max: 10 },
-      { id: "outrosResultadosAbrangentes", min: -3, max: 3 }
-    ],
-    calculator: "resultadoAbrangente",
-    question: "Lucro Líquido = {lucroLiquido}, Outros Resultados = {outrosResultadosAbrangentes}, Resultado Abrangente = ?",
-    explanation: "Resultado Abrangente = Lucro Líquido + Outros Resultados"
-  }
+// Banco de contas falsas (intrusas) que NÃO afetam o Lucro Bruto (na DRE) nem o Valor Adicionado/Pessoal (na DVA)
+const contasIntrusasDisponiveis = [
+    { conta: "Caixa e Equivalentes de Caixa", valor: 150, obs: "Conta Patrimonial (Ativo)" },
+    { conta: "Capital Social Subscrito", valor: 500, obs: "Conta Patrimonial (Patrimônio Líquido)" },
+    { conta: "Fornecedores Nacionais", valor: 85, obs: "Conta Patrimonial (Passivo Circulante)" },
+    { conta: "Empréstimos Bancários de Longo Prazo", valor: 200, obs: "Conta Patrimonial (Passivo Não Circulante)" },
+    { conta: "Aplicações Financeiras", valor: 60, obs: "Conta Patrimonial (Ativo)" },
+    { conta: "Dividendos Propostos a Pagar", valor: 45, obs: "Conta Patrimonial (Passivo)" }
 ];
 
-// Função utilitária para sortear valores
-function randomValue(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+function r(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-// Gerador de exercício
-function generateExercise(template) {
-  const values = {};
-  template.variables.forEach(v => {
-    values[v.id] = randomValue(v.min, v.max);
-  });
-  const answer = calculators[template.calculator](values);
-  const question = template.question.replace(/\{(\w+)\}/g, (_, id) => values[id]);
-  return { question, answer, explanation: template.explanation, values };
+function gerarQuestaoTeorica() {
+    const tipo = document.getElementById("tipoDemonstracao").value;
+    const dificuldade = document.getElementById("nivelDificuldade").value;
+
+    document.getElementById("areaResposta").innerHTML = ""; // Limpa resposta anterior
+    document.getElementById("areaQuestao").style.display = "block";
+
+    let contasBase = [];
+    let solucaoExplicada = {};
+
+    if (tipo === 'dre') {
+        // 1. Definição dos valores base da DRE (Sempre inteiros e pequenos)
+        const rb = r(50, 90);
+        const impostos = r(2, 4) * 2; // Força par para facilitar se houver divisão
+        const devolucoes = r(2, 5);
+        const cmv = r(15, 30);
+
+        // Despesas operacionais que NÃO entram no cálculo do Lucro Bruto (Apenas Intrusas de Resultado)
+        const despesaPropaganda = r(3, 8);
+        const despesaFinanceira = r(2, 6);
+
+        contasBase = [
+            { conta: "Receita Bruta de Vendas", valor: rb, afeta: true, tag: "RB" },
+            { conta: "Impostos Incidentes sobre Vendas", valor: impostos, afeta: true, tag: "DED" },
+            { conta: "Devoluções de Vendas", valor: devolucoes, afeta: true, tag: "DED" },
+            { conta: "Custo das Mercadorias Vendidas (CMV)", valor: cmv, afeta: true, tag: "CMV" },
+            { conta: "Despesas com Propaganda e Marketing", valor: despesaPropaganda, afeta: true, tag: "OPER" },
+            { conta: "Despesas Financeiras Líquidas", valor: despesaFinanceira, afeta: true, tag: "FIN" }
+        ];
+
+        // Cálculo da resolução teórica
+        const deducoes = impostos + devolucoes;
+        const receitaLiquida = rb - deducoes;
+        const lucroBruto = receitaLiquida - cmv;
+
+        // Despesas após o lucro bruto
+        const despesasOperacionais = despesaPropaganda;
+        const despesasFinanceiras = despesaFinanceira;
+
+        const lucroLiquido = lucroBruto - despesasOperacionais - despesasFinanceiras;
+
+        solucaoExplicada = {
+            tipo: "DRE",
+            texto: `
+                <strong>Resolução Passo a Passo (DRE):</strong><br><br>
+
+                • Receita Bruta: R$ ${rb}<br>
+                • (–) Impostos sobre Vendas: R$ ${impostos}<br>
+                • (–) Devoluções de Vendas: R$ ${devolucoes}<br>
+                <strong>👉 RECEITA LÍQUIDA = R$ ${receitaLiquida}</strong><br><br>
+
+                • Receita Líquida: R$ ${receitaLiquida}<br>
+                • (–) Custo das Mercadorias Vendidas (CMV): R$ ${cmv}<br>
+                <strong>👉 LUCRO BRUTO = R$ ${lucroBruto}</strong><br><br>
+
+                • Lucro Bruto: R$ ${lucroBruto}<br>
+                • (–) Despesas com Propaganda e Marketing: R$ ${despesaPropaganda}<br>
+                • (–) Despesas Financeiras Líquidas: R$ ${despesaFinanceira}<br>
+                <strong>👉 LUCRO LÍQUIDO = R$ ${lucroLiquido}</strong><br>
+            `
+        };
+
+        document.getElementById("tituloQuestao").innerText = "Exercício de Estrutura: DRE";
+        document.getElementById("enunciadoQuestao").innerText = "Com base exclusivamente nas contas fornecidas, determine: (1) a Receita Líquida, (2) o Lucro Bruto e (3) o Lucro Líquido.";
+
+    } else if (tipo === 'dva') {
+        // 2. Definição dos valores base da DVA
+        const rb = r(60, 100);
+        const insumos = r(20, 40);
+
+        const depreciacao = r(2, 6);
+
+        const salarios = r(10, 30);
+        const encargos = Math.round(salarios * 0.3);
+
+        const impostosGoverno = r(4, 10);
+
+        const juros = r(2, 8);
+
+        const dividendos = r(3, 10);
+
+        const equivalenciaPatrimonial = r(5, 12);
+        contasBase = [
+            {
+                conta: "Receita Bruta de Vendas",
+                valor: rb,
+                afeta: true,
+                tag: "DVA_REC"
+            },
+
+            {
+                conta: "Insumos Adquiridos de Terceiros",
+                valor: insumos,
+                afeta: true,
+                tag: "DVA_INS"
+            },
+
+            {
+                conta: "Depreciação do Período",
+                valor: depreciacao,
+                afeta: true,
+                tag: "DVA_RET"
+            },
+
+            {
+                conta: "Salários",
+                valor: salarios,
+                afeta: true,
+                tag: "DVA_PES"
+            },
+
+            {
+                conta: "Encargos Sociais",
+                valor: encargos,
+                afeta: true,
+                tag: "DVA_PES"
+            },
+
+            {
+                conta: "Impostos, Taxas e Contribuições",
+                valor: impostosGoverno,
+                afeta: true,
+                tag: "DVA_GOV"
+            },
+
+            {
+                conta: "Juros sobre Empréstimos",
+                valor: juros,
+                afeta: true,
+                tag: "DVA_TER"
+            },
+
+            {
+                conta: "Dividendos Distribuídos",
+                valor: dividendos,
+                afeta: true,
+                tag: "DVA_PROP"
+            },
+
+            {
+                conta: "Receita de Equivalência Patrimonial",
+                valor: equivalenciaPatrimonial,
+                afeta: true,
+                tag: "DVA_TRANSF"
+            }
+        ];
+
+        const valorAdicionadoBruto = rb - insumos;
+
+        const valorAdicionadoLiquido = valorAdicionadoBruto - depreciacao;
+
+        const valorAdicionadoTotalDistribuir = valorAdicionadoLiquido + equivalenciaPatrimonial;
+
+        const pessoal = salarios + encargos;
+
+        const governo = impostosGoverno;
+
+        const capitalTerceiros = juros;
+
+        const capitalProprio = dividendos;
+
+        solucaoExplicada = {
+            tipo: "DVA",
+            texto: `
+        <strong>Resolução da DVA:</strong><br><br>
+
+        • Receitas: R$ ${rb}<br>
+        • (–) Insumos adquiridos de terceiros: R$ ${insumos}<br>
+
+        <strong>👉 Valor Adicionado Bruto = R$ ${valorAdicionadoBruto}</strong><br><br>
+
+        • (–) Depreciação: R$ ${depreciacao}<br>
+
+        <strong>👉 Valor Adicionado Líquido Produzido pela Entidade = R$ ${valorAdicionadoLiquido}</strong><br><br>
+
+        • (+) Valor Adicionado Recebido em Transferência (Equivalência Patrimonial): R$ ${equivalenciaPatrimonial}<br>
+
+        <strong>👉 Valor Adicionado Total a Distribuir = R$ ${valorAdicionadoTotalDistribuir}</strong><br><br>
+
+        <strong>Distribuição do Valor Adicionado:</strong><br>
+
+        • Pessoal = Salários + Encargos = R$ ${pessoal}<br>
+
+        • Governo = R$ ${governo}<br>
+
+        • Capital de Terceiros = R$ ${capitalTerceiros}<br>
+
+        • Capital Próprio = R$ ${capitalProprio}<br>
+    `
+        };
+
+        document.getElementById("tituloQuestao").innerText = "Exercício de Estrutura: DVA";
+        document.getElementById("enunciadoQuestao").innerText = "Com base nas contas apresentadas e na NBC TG 09, elabore a DVA, determinando: Valor Adicionado Bruto, Valor Adicionado Líquido Produzido pela Entidade, Valor Adicionado Total a Distribuir e a distribuição para Pessoal, Governo, Capital de Terceiros e Capital Próprio.";
+    }
+
+    // 3. Adicionar Contas Patrimoniais Intrusas com base na dificuldade
+    let quantidadeIntrusas = 0;
+    if (dificuldade === "medio") quantidadeIntrusas = 2;
+    if (dificuldade === "dificil") quantidadeIntrusas = 4;
+
+    // Embaralha e pinça do banco de intrusas patrimoniais
+    const intrusasSelecionadas = [...contasIntrusasDisponiveis]
+        .sort(() => 0.5 - Math.random())
+        .slice(0, quantidadeIntrusas)
+        .map(item => ({ ...item, afeta: false, tag: "INTRUSA_PATRIMONIAL" }));
+
+    // Consolida e reordena todas as contas aleatoriamente para exibição na tabela
+    const listaExibicaoFinal = [...contasBase, ...intrusasSelecionadas]
+        .sort(() => 0.5 - Math.random());
+
+    questaoAtual = {
+        contas: listaExibicaoFinal,
+        solucao: solucaoExplicada
+    };
+
+    // 4. Renderiza a tabela HTML
+    const tbody = document.getElementById("corpoTabelaContas");
+    tbody.innerHTML = "";
+
+    listaExibicaoFinal.forEach(item => {
+        tbody.innerHTML += `
+            <tr>
+                <td>${item.conta}</td>
+                <td class="text-right">R$ ${item.valor},00</td>
+            </tr>
+        `;
+    });
+    iniciarCronometro();
 }
 
-// Correção
-function checkAnswer(exercise, userAnswer) {
-  const correct = Number(userAnswer) === exercise.answer;
-  return {
-    correct,
-    feedback: `${exercise.explanation}\nCálculo: ${Object.values(exercise.values).join(", ")} → ${exercise.answer}`
-  };
+function formatarTempo(segundos) {
+    const min = Math.floor(segundos / 60);
+    const seg = segundos % 60;
+
+    return `${String(min).padStart(2, '0')}:${String(seg).padStart(2, '0')}`;
 }
 
-// Estatísticas simples em localStorage
-function updateStats(correct) {
-  const stats = JSON.parse(localStorage.getItem("stats") || '{"total":0,"correct":0}');
-  stats.total++;
-  if (correct) stats.correct++;
-  localStorage.setItem("stats", JSON.stringify(stats));
-  return stats;
+function iniciarCronometro() {
+
+    clearInterval(intervaloCronometro);
+
+    inicioQuestao = Date.now();
+
+    document.getElementById("cronometroQuestao").innerText =
+        "Tempo: 00:00";
+
+    intervaloCronometro = setInterval(() => {
+
+        const segundos = Math.floor(
+            (Date.now() - inicioQuestao) / 1000
+        );
+
+        document.getElementById("cronometroQuestao").innerText =
+            `Tempo: ${formatarTempo(segundos)}`;
+
+    }, 1000);
 }
 
-// Interface mínima
-function renderExercise() {
-  const template = templates[Math.floor(Math.random() * templates.length)];
-  const exercise = generateExercise(template);
+function pararCronometro() {
 
-  document.body.innerHTML = `
-    <h3>${template.module}</h3>
-    <p>${exercise.question}</p>
-    <input id="answer" type="number" />
-    <button id="submit">Responder</button>
-    <div id="feedback"></div>
-    <div id="stats"></div>
-  `;
+    clearInterval(intervaloCronometro);
 
-  document.getElementById("submit").onclick = () => {
-    const userAnswer = document.getElementById("answer").value;
-    const result = checkAnswer(exercise, userAnswer);
-    document.getElementById("feedback").innerText = result.feedback;
-    const stats = updateStats(result.correct);
-    document.getElementById("stats").innerText = `Total: ${stats.total}, Acertos: ${stats.correct}`;
-  };
+    return Math.floor(
+        (Date.now() - inicioQuestao) / 1000
+    );
 }
 
-// Inicialização
-renderExercise();
+function revelarResposta() {
+    if (!questaoAtual) return;
+
+    const tempoGasto = pararCronometro();
+
+    let htmlIntrusas = "<h4>Análise das Contas Sem Impacto Neste Cálculo:</h4><ul>";
+    let houveIntrusa = false;
+
+    questaoAtual.contas.forEach(item => {
+        if (!item.afeta) {
+            houveIntrusa = true;
+            let motivo = item.tag === "INTRUSA_PATRIMONIAL" ? "Conta de Balanço Patrimonial (não vai para DRE/DVA)" : "Aparece na demonstração, mas fora do grupo solicitado";
+            htmlIntrusas += `<li><strong>${item.conta}</strong> (R$ ${item.valor}) <span class="badge">Sem impacto</span><br><small>Motivo: ${motivo}.</small></li>`;
+        }
+    });
+
+    if (!houveIntrusa) htmlIntrusas += "<li>Nenhuma conta intrusa gerada neste nível.</li>";
+    htmlIntrusas += "</ul>";
+
+    document.getElementById("areaResposta").innerHTML = `
+        <div class="resultado-box">
+
+            <div style="
+                background:#eef7ff;
+                border:1px solid #cce5ff;
+                padding:10px;
+                margin-bottom:15px;
+                border-radius:6px;
+                font-weight:bold;
+            ">
+                ⏱ Tempo gasto: ${formatarTempo(tempoGasto)}
+            </div>
+
+            ${questaoAtual.solucao.texto}
+
+            <hr style="border: 0; border-top: 1px solid #ccc; margin: 15px 0;">
+
+            ${htmlIntrusas}
+        </div>
+    `;
+}
